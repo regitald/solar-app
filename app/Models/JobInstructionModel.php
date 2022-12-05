@@ -48,4 +48,8 @@ class JobInstructionModel extends Model
     public function operator_progress() {
 		return $this->hasOne('App\Models\SpkOperatorModel', 'spk_id','id')->where('status','process')->with('work_step');
   	}
+
+      public function more_orders() {
+		return $this->hasMany('App\Models\JobInstructionMoreModel', 'spk_parent','id');
+  	}
 }

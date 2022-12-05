@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\OperatorModel;
 use App\Models\JobInstructionModel;
+use App\Models\JobInstructionMoreModel;
 use App\Models\SpkOperatorModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -82,31 +83,21 @@ class FollowUpController extends Controller
 
         return redirect('/follow-up')->with('success', "Success Updated Data!");
     }
-    public function more(Request $request, $id=NULL){
-        $data['data'] =  JobInstructionModel::select('id','spk_number')->where('id',$id)->first();
+    public function more(Request $request){
+        $data['spk'] =  JobInstructionModel::select('id','spk_number')->get();
         $data['work_step'] = OperatorModel::get();
-        $data['generated_spk']= $data['data'] != NULL ? 'SLN'.date("y").'-'.explode("-",$data['data']['spk_number'])[1].'-K' : "";
         return view('follow-up.form-kekurangan-tambahan-spk',$data);
     }
 
     public function storeMore(Request $request){
-        $path = Storage::putFile(
-            'public/images',
-            $request->file('files')
-        );
-        $request['taxes_type'] ? $request['taxes_type'] = 1 : $request['taxes_type'] = 0;
-        $request['spk_files'] = basename($path);
-        $store = JobInstructionModel::create($request->except('files'));
+        $last_id =  JobInstructionMoreModel::select('id')->latest('id')->first();
+        $parent =  JobInstructionModel::select('id','spk_number')->where('spk_number',$request['spk_parent'])->first();
+        $code = $request['customer_name'] == 'QC' ? $request['spk_parent'].'.GC'.sprintf("%04d", $last_id['id']+1) : $request['spk_parent'].'.K'.sprintf("%04d", $last_id['id']+1) ;
+        $request['spk_number'] = $code;
+        $request['spk_parent'] = $parent['id'];
+        $store = JobInstructionMoreModel::create($request->all());
 
-        for ($i=0; $i <count($request['work_step']) ; $i++) {
-            $payload['operator_id'] = $request['work_step'][$i];
-            $payload['spk_id'] = $store->id;
-            $arr[] = $payload;
-        }
-
-        $work_step = SpkOperatorModel::insert($arr);
-
-        if(!$store && !$work_step) return redirect()->back()->withErrors($store);
+        if(!$store) return redirect()->back()->withErrors($store);
 
         return redirect('/follow-up')->with('success', "Success Created Order!");
     }

@@ -20,7 +20,7 @@
                 <!-- PAGE-HEADER END -->
 
                 <!-- ROW-1 -->
-                <form role="form" method="post" action="{{ url('follow-up/form/'.request()->route('id')) }}" enctype="multipart/form-data">
+                <form role="form" method="post" action="{{ url('follow-up/form/more') }}" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-md-12 col-xl-12">
@@ -30,25 +30,30 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-sm-6 col-md-6">
+                                    <div class="col-sm-6 col-md-6">
                                             <div class="form-group">
-                                                <label for="pemesan" class="form-label">Pemesan</label>
-                                                <input type="text" class="form-control" placeholder="Pemesan">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label">No. SPK</label>
-                                                <select name="country" class="form-control form-select" data-bs-placeholder="Pilih No. SPK - Order">
-                                                        <option value="">Pilih No. SPK - Order</option>
-                                                        <option value="1">{{$generated_spk}}</option>
+                                                <label class="form-label">Request</label>
+                                                <select name="customer_name" class="form-control form-select" data-bs-placeholder="Pilih Request" required>
+                                                        <option value="Pemesan">Pemesan</option>
+                                                        <option value="QC">QC</option>
                                                     </select>
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6">
                                             <div class="form-group">
+                                                <label class="form-label">No. SPK</label>
+                                                <select name="spk_parent" class="form-control form-select" data-bs-placeholder="Pilih No. SPK - Order" required>
+                                                    <option selected></option>
+                                                    @foreach($spk as $key)
+                                                        <option id="spk_parent" value="{{$key['spk_number']}}" name="spk_parent">{{$key['spk_number']}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="form-group">
                                                 <label for="qty" class="form-label">Qty</label>
-                                                <input type="text" class="form-control" placeholder="Qty">
+                                                <input type="text" class="form-control" placeholder="Qty" required>
                                             </div>
                                         </div>
 

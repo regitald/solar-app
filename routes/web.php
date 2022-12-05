@@ -25,7 +25,7 @@ Route::get('/follow-up', 'App\Http\Controllers\FollowUpController@index');
 Route::get('/follow-up/form', 'App\Http\Controllers\FollowUpController@form');
 Route::post('/follow-up/form', 'App\Http\Controllers\FollowUpController@store');
 Route::get('/follow-up/form/{id}', 'App\Http\Controllers\FollowUpController@more');
-Route::post('/follow-up/form/{id}', 'App\Http\Controllers\FollowUpController@storeMore');
+Route::post('/follow-up/form/more', 'App\Http\Controllers\FollowUpController@storeMore');
 Route::get('/follow-up/order', 'App\Http\Controllers\FollowUpController@order');
 Route::get('/follow-up/database/{status}', 'App\Http\Controllers\FollowUpController@database');
 Route::get('/follow-up/re-order/{id}', 'App\Http\Controllers\FollowUpController@reOrder');
